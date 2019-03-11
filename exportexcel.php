@@ -48,7 +48,9 @@ function exportexcel_civicrm_export( $exportTempTable, $headerRows, $sqlColumns,
   $limit  = 10;
 
   $query = "SELECT * FROM $exportTempTable";
-  require_once 'CRM/Core/Report/Excel.php';
+  $exportProcessor = new CRM_Export_BAO_ExportProcessor($exportMode, NULL, "");
+  $exportFileName = $exportProcessor->getExportFileName("xls");
+
   while ( 1 ) {
     $limitQuery = $query . " LIMIT $offset, $limit;";
     $dao = CRM_Core_DAO::executeQuery( $limitQuery );
@@ -67,7 +69,7 @@ function exportexcel_civicrm_export( $exportTempTable, $headerRows, $sqlColumns,
     }
  
     //CRM_Core_Report_Excel::
-    writeHTMLFile( CRM_Export_BAO_Export::getExportFileName('xls', $exportMode)." ".date("Y-m-d_H-i"), $headerRows,$componentDetails, null, $writeHeader );
+    writeHTMLFile( "{$exportFileName} ".date("Y-m-d_H-i"), $headerRows, $componentDetails, NULL, $writeHeader );
     $writeHeader = false;
     $offset += $limit;
   }
